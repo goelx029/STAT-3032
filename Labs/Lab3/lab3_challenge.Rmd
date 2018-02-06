@@ -1,0 +1,150 @@
+---
+title: "lab3_challenge"
+author: "Saksham Goel"
+date: "January 30, 2018"
+output: pdf_document
+---
+
+# The Timing of Processing Invoices.  
+We have talked about the study of production runs during the lecture. Now it is time for you to explore the data firsthand. 
+
+## Download data
+Download the data **production.txt** from the textbook website <www.stat.tamu.edu/~shether/book>
+
+## Read data into R
+Read the data into R by using function "read.table( )" and save the data in a variable called "prod". Prod will be a type of R object called data frame. 
+
+You can provide a complete address for the file or set the working directory to the folder where you have saved the data:
+
+prod = read.table('/myComputer/myFolder1/myFolder2/production.txt', header = TRUE)
+
+Or
+
+setwd('/myComputer/myFolder1/myFolder2') 
+
+prod = read.table('production.txt', header = TRUE)
+
+```{r download_data}
+# read data into R. 
+prod = read.table("invoices.txt", header= TRUE)
+# Use function View(prod) or head(prod) to see if the data has been imported successfully. 
+#View(prod)
+head(prod)
+# Advanced: can you try importing data using "read.csv( )" instead of "read.table( )":
+csv_type = read.csv("invoices.txt", header = TRUE, sep = "\t")
+#View(csv_type)
+head(csv_type)
+```
+
+## Explore data 
+**summary( )** is a very important function. See what happens when you apply it to a dataframe. 
+
+```{r explore_data1}
+# explore data using summary()
+summary(prod)
+
+```
+Now let us draw some exploratory plots. 
+
+For each variable in the data frame, we can draw a histogram. A histogram can give us an idea of the distribution of a variable. 
+
+```{r explore_data2}
+# explore the data with histograms
+# Hint: use hist() for histograms
+hist(prod$Invoices)
+hist(prod$Time)
+```
+
+Next we draw a scatterplot with one variable (RunSize) on the x axis and another variable (RunTime) on the y axis. 
+
+```{r explore_data3}
+# explore data with scatterplot
+# Hint: use plot( )
+plot(x = prod$Invoices, y = prod$Time)
+```
+
+## Fit a regression model
+The linear trend in the scatterplot seems strong, which means that a linear regression model is appropriate. 
+
+```{r fit_model1}
+# fit a linear regression model
+# Hint: use lm( ). Don't forget to save the model to a variable called "mod"
+mod = lm( prod$Time ~ prod$Invoices )
+```
+
+We have applied the function summary( ) to a data frame. This function can also be applied to a model. 
+
+```{r fit_model2}
+# apply summary( ) to your model
+summary(mod)
+```
+
+Please complete the following formula of the model:
+
+Fitted Time = 0.6417099 + 0.0112916 * Invoices
+
+Or we can use mathematical symbols:
+
+Let X = Invoices, Y = Time. $\hat{Y} = \hat{\beta_0} + \hat{\beta_1}X$
+
+## Compare the observed RunTime and the fitted RunTime
+
+```{r compare}
+# Print out the observed RunTime
+# prod$RunTime 
+# Print out the observed RunTime
+# Hint: Use mod$fitted.values OR use predict(mod)
+prod$Time
+predict(mod)
+
+```
+
+The observed RunTime is different from the fitted RunTime. 
+
+## visualize the observed RunTime and the fitted RunTime
+
+```{r visual}
+# Hint: first draw a scatterplot of the data
+plot(x = prod$Invoices, y = prod$Time)
+# Next add the fitted values
+points(predict(mod) ~ prod$Invoices, col = 'red', pch = 4)
+```
+
+## Calculating the estimated coefficients using formulas
+We learnt that the following formulas during the lecture:
+
+$$\hat{\beta_1} = \frac{\sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^n (x_i-\bar{x})^2} $$
+
+$$\hat{\beta_0} = \bar{y} - \hat{\beta_1}\bar{x}$$
+
+Let's use these two formulas to estimate the coefficients. 
+```{r calculate}
+ x = prod$Invoices
+ y = prod$Time
+ xbar = mean(x)
+ ybar = mean(y)
+ 
+ beta1_hat = sum((x-xbar)*(y-ybar)) / sum((x-xbar)^2)
+ beta1_hat
+ beta0_hat = ybar - beta1_hat*xbar
+ beta0_hat
+```
+Compare beta1_hat and beta2_hat with the estimated coefficients obtained from the linear regression model. They should be identical! 
+
+
+Finding a Confidence Interval for the {\beta_0} is computed as follows:
+```{r conf_interval}
+sum = summary(mod)
+str(summary(mod))
+b_value = sum$intercept
+b_value_error = sum$
+ x = prod$Invoices
+ y = prod$Time
+ xbar = mean(x)
+ ybar = mean(y)
+ 
+ beta1_hat = sum((x-xbar)*(y-ybar)) / sum((x-xbar)^2)
+ beta1_hat
+ beta0_hat = ybar - beta1_hat*xbar
+ beta0_hat
+```

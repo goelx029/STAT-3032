@@ -1,0 +1,206 @@
+---
+title: "HW1 Question 2"
+author: "Saksham Goel"
+date: "February 3, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 2 - Processing Time of Invoices
+
+### Introducing the Dataset
+
+This section is dedicated to see and understand the data that was provided from a large company about the number of invoices processed and the total processing time for those invoices. The data being observed is of a whole month. 
+The data table is as follows:
+```{r q1_view_data}
+invoiceTime = read.table("invoices.txt", header = T)
+invoiceTime[,]
+```
+
+
+### Visualizing the Dataset
+The dataset can be visalized through a scatterplot in the figure below:
+```{r q1_plot_data}
+plot(x = invoiceTime$Invoices, y = invoiceTime$Time)
+```
+
+### Fitting a linear model
+The linear trend in the scatterplot seems strong, which means that a linear regression model is appropriate. The linear model that we are trying to fit is of the form:
+
+\begin{center}$\hat{Y} = \hat{\beta_0} + \hat{\beta_1}X$\end{center}
+
+here,
+X = Number of Invoices
+Y = Total Time required to process those Invoices
+
+Through this linear model we are trying to predict the value of total time required to process invoices (Y) using the number of invoices (X). The following snippet of the R-Code fits a linear model on the data, prints out the values of the intercept and slope and also provides a summary of the fitted model.
+```{r q1_fit_model}
+mod = lm(invoiceTime$Time ~ invoiceTime$Invoices )
+mod
+```
+
+After fitting the model and observing the values of the parameters $\hat{\beta_0}, \hat{\beta_1}$ we find that:
+
+\begin{center} $ \hat{\beta_0} = 0.64171 $ \end{center}
+\begin{center} $\hat{\beta_1} = 0.01129 $ \end{center}
+
+
+The summary of the model is as follows:
+```{r q1_fit_model2}
+summary(mod)
+```
+The summary provides us with a lot of useful values that we will use in the upcoming sections to calculate the Confidence Intervals, Prediction Intervals and perform Hypothesis Testing. Some of the values are as follows:
+
+Sum of Residuals Square (s) = 0.3298\\
+Degrees of freedom (n-2) = 28\\
+
+
+Combining all the information from the previous sections the final fitted model looks as follows:
+
+\begin{center}$Y = 0.6417099 + (0.0112916 * X)$\end{center}
+
+
+### Finding a 95% Confidence Inrerval $\beta_0$
+A $100(1-\alpha)\%$ confidence interval for $\hat{\beta_0}$ is given by the following formula:
+
+\begin{center}
+\begin{math}
+\hat{\beta_{0}} -  t_{ \frac{\alpha}{2},n-2}\cdot s \cdot \sqrt{\frac{1}{n} + \frac{\bar{x}^2}{S_{XX}}} \leq \beta_0 \leq \hat{\beta_{0}} +  t_{ \frac{\alpha}{2},n-2}\cdot s \cdot \sqrt{\frac{1}{n} + \frac{\bar{x}^2}{S_{XX}}}
+\end{math}
+\end{center}
+
+The following snippet of code is used to find the $95\%$ confidence interval for $\hat{\beta_0}$:
+
+```{r q2_CI}
+bet0_hat = 0.6417099 #using the linear model fit from prevous section
+x_col = invoiceTime$Invoices
+x_bar = mean(x_col)
+#x_bar = 130.0333
+sxx = sum((x_col-x_bar)^2)
+#sxx = 162367
+n = length(x_col)
+#n = 30
+s = 0.3298 #found through the summary of the linear model
+t_mult = 2.048 #found using the T Table, equal to t0.25 for 28 degrees of freedom
+beta0CIlower = bet0_hat - ( t_mult * s * sqrt( (1/n) + ((x_bar^2)/(sxx)) ) )
+beta0CIupper = bet0_hat + ( t_mult * s * sqrt( (1/n) + ((x_bar^2)/(sxx)) ) )
+#beta0CIlower = 0.3912792
+#beta0CIupper = 0.8921406
+```
+
+The $95\%$ confidence interval can thus be given as follows: 
+\begin{center}
+\begin{math}
+0.3912792 \leq \beta_{0} \leq 0.8921406
+\end{math}
+\end{center}
+
+
+### Hypothesis Testing for $\beta_1$
+We need to run a Hypothesis Test for $\beta_0$ given by:
+\begin{center}
+\begin{math}
+Null \big(H_{0}\big) \beta_{1}= 0.01
+Alternate \big(H_{1}\big) \beta_{1} \ne 0.01
+\end{math}
+\end{center}
+
+The hypothesis test for $\beta_0$ is given by the following formula:
+
+\begin{center}
+\begin{math}
+\hat{T} = \frac{\hat{\beta_1} - \beta_1}{\frac{s}{\sqrt{S_XX}}}
+\end{math}
+\end{center}
+
+To find the p-value we then use the t-statistic we got from the previous formula and find the probability as follows:
+\begin{center}
+\begin{math}
+p-val = 2 \cdot P\big( t \geq \mid\hat{T}\mid\big)
+\end{math}
+\end{center}
+
+The following snippet of code is used to perform the Hypothesis Test for $\beta_1$:
+
+```{r q1_HT}
+bet1_hat = 0.0112916 #found using the linear model in the previous sections
+x_col = invoiceTime$Invoices
+y_col = invoiceTime$Time
+x_bar = mean(x_col)
+#x_bar = 130.0333
+y_bar = mean(y_col)
+#y_bar = 2.11
+sxx = sum((x_col-x_bar)^2)
+#sxx = 162367
+sxy = sum((x_col-x_bar)*(y_col-y_bar))
+#sxy = 1833.39
+#sxy/sxx = 0.0112916
+n = length(x_col)
+s = 0.3298 #found through the summary of the linear model
+t_mult = 2.048 #found using the T Table, equal to t0.25 for 28 degrees of freedom
+beta1test = ( ( bet1_hat - 0.01 )/( s/sqrt( sxx ) ) )
+#beta1test = 1.57807
+p_val = 2*pt(-abs(beta1test), df = n-2)
+#p_val = 0.1257819
+```
+
+After performing the Hypothesis test for $\beta_1$ we find that the $p-value = 0.1257819$ which is greater than $0.05$, hence we cannot reject the null hypothesis.
+
+### Point Estimate for new Y
+
+Through the previous sections we know that:
+\begin{center}$Y = 0.6417099 + (0.0112916 * X)$\end{center}
+
+So to find the point estimate of Y using the fitted model we get:
+```{r point_Estimate}
+X = 130 #X value for which we need to find the estimated value
+Y = 0.6417099 + 0.0112916 * X
+#Y = 2.109618
+```
+
+Through this above snippet of code we get the point estimate of $Y$ at $X = 130$ as $Y = 2.109618$ which is roughly equal to $127 mins$.
+
+
+### Prediction Interval for new Y
+There is no use of a Linear Model if we cannot predict new values of the parameter Y through X. In this section we will construct a prediction interval of the Y value using the formulas provided in the book. The prediction interval of Y is given by the formula as follows:
+
+\begin{center}
+\begin{math}
+\hat{y}_{n+1} \pm t_{\alpha/2,n-2}\sqrt{MSE} \sqrt{1+\dfrac{1}{n}+\dfrac{(x_{n+1}-\bar{x})^2}{\sum(x_i-\bar{x})^2}}
+\end{math}
+\end{center}
+
+The following snippet of code helps us to find the upper and lower limits of the Prediction Interval for the new Y as follows:
+
+```{r q1_PI}
+#fitted model = 
+# Y = 0.6417099 + 0.0112916 * X
+x_curr = 130 #the value at which we need to find the prediction interval
+y_hat = 0.6417099 + (0.0112916 * x_curr)
+#y_hat = 2.109618
+mse = mean(mod$residuals^2) # mean((invoiceTime$Times - predict(mod))^2)
+#mse = 0.1015004
+x_col = invoiceTime$Invoices
+x_bar = mean(x_col)
+#x_bar = 130.0333
+sxx = sum((x_col-x_bar)^2)
+#sxx = 162367
+n = length(x_col)
+s = 0.3298 #found through the summary of the linear model
+t_mult = 2.048 #found using the T Table, equal to t0.25 for 28 degrees of freedom
+yPILower = y_hat - (t_mult * sqrt(mse) * sqrt(1 + (1/n) + (((x_curr - x_bar)^2)/sxx) ))
+yPIUpper = y_hat + (t_mult * sqrt(mse) * sqrt(1 + (1/n) + (((x_curr - x_bar)^2)/sxx) ))
+#yPILower = 1.446357
+#yPIUpper = 2.772878
+```
+
+Through the above snippet of code the resulting $95%$ prediction interval is given as follows:
+
+\begin{center}
+\begin{math}
+1.446357 \leq Y \leq 2.772878
+\end{math}
+\end{center}

@@ -1,0 +1,41 @@
+---
+title: "STAT 3032 - Assignment2"
+author: "Saksham Goel"
+date: "January 26, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## A Simple Data Analysis
+This assignment focus on using R and RStudio specifically to create a .Rmd file using RStudio. In this assignment I will also study the hurricanes dataset, consisting of 287 hurricanes that had made landfall in the US between 1851 and 2013.
+
+## Step 1 - Importing the Dataset
+To import the dataset in R I use a simple "read.csv" command which read a csv file and then I just store all the data stored in a variable called hurricanes as follows:
+```{r intro}
+hurricanes = read.csv("hurricanes.csv")
+```
+
+## Step 2 - Printing the Dataset Summary
+Once I have imported the dataset I can use a simple summary() function to get a summary of all the data from the dataset. This function provides a brief summary containing mean, median, mode, range etc for all the individual columns or variables in the dataset. The summary command and the summary is as follows:
+```{r summary}
+summary(hurricanes)
+```
+
+## Step 3 - Printing the First 6 rows of Dataset
+Printing the actual data is easy and can be accomplished as given in the piece of code below. Here we have specified that we just want the data for the first 6 rows.
+```{r rows}
+hurricanes[1:6,]
+```
+
+## Step 4 - Making a Histogram
+To print out a histogram containing just data regarding one column can be achived by the code as given below:
+```{r hist}
+hist(hurricanes$MaxWind)
+```
+
+## Step 5 - Analyzing the Histogram
+Analyzing the Histogram:
+In the above histogram we can see that frequency of the first bin corresponding to 60-70 is highest. The frequency of the highest bin seems to be more than 60 and also the graph seems to follow a general trend of decreasing fequency (linear decrease) with increase in the max wind speed. One shocking thing is that the frequency of the max_wind in range 70-80 is less than that of 80-90 which does not follow the usual pattern. I suppose that this can be attributed to the fact regarding how the data was collected and also that the data is a sample and thus can have some aberrant behaviours.

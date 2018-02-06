@@ -1,0 +1,72 @@
+---
+title: "R Exercise2"
+author: "Georgia Huang"
+date: "1/23/2018"
+output: pdf_document
+---
+
+## A Simple Data Analysis
+We will study the hurricanes dataset, consisting of 287 hurricanes that had made landfall in the US between 1851 and 2013. 
+
+
+### Step 1: import data
+```{r step1}
+setwd('/Users/zhuozhihuang/Desktop')  # set the director/folder you want to work in. 
+hur = read.csv('hurricanes.csv')
+hur1 = hur[, 1:5] # we only want the first 5 columns
+```
+
+### Step 2: explore data 
+Information about the variables:
+* Year, Month: The year and month in which the hurricane made landfall.
+* HighestSS: The highest Saffir–Simpson hurricane wind scale that the hurricane produced in the US.
+* Pressure: The central pressure of the hurricane at landfall, measured in hPa.
+* MaxWind: The highest sustained surface wind occurred along the US coast
+* Name: The name of the hurricane, if available.
+
+#### summary statistics
+```{r step2.1}
+head(hur1)  # view the first few lines of data
+names(hur1) # the name of the variables (column headers)
+dim(hur1) # how many rows, how many columns
+summary(hur1)
+```
+#### exploratory plots
+```{r step2.2}
+hist(hur1$Pressure)
+hist(hur1$MaxWind)
+```
+Histograms can give us some idea about the underlying probability distributions of the variables. 
+
+### Step 3: Evaluate the relationship between MaxWind and Pressure
+```{r step 3.1}
+plot(Pressure~MaxWind, data = hur1)
+```
+It seems that as MaxWind increases, pressure tends to decrease.Let us add a straight line to fit the relationship. 
+
+
+### Step 4: Output/save data
+```{r step4}
+write.csv(hur1, 'hurricanes_partial.csv')
+```
+
+## Simulation /Random sampling
+R can create a random sample. Let us use get a random sample from Normal(2, 4). 
+
+```{r step5}
+a = rnorm(n = 100, mean = 2, sd = 2)
+hist(a)
+```
+It looks somewhat symmetric with center at 2, but not exactly normal. This is because our sample size is not large enough. 
+
+```{r step6}
+a2 = rnorm(n = 1000, mean = 2, sd = 2)
+hist(a2)
+```
+It is getting close to the shape of a normal distribution. Let's increase the sample size again. 
+
+```{r step7}
+a2 = rnorm(n = 10000, mean = 2, sd = 2)
+hist(a2)
+```
+It lookes like a normal distribution centered at 2! If you increase the sample size, the approximation will get better and better. 
