@@ -34,9 +34,11 @@ The linear trend in the scatterplot seems strong, which means that a linear regr
 
 here,
 X = Gross Box Office results for Previous Week
+
+
 Y = Gross Box Office results for Current Week. 
 
-Through this linear model we are trying to predict the value of actual gross box office reults of current week (Y) using the gross box office results of the previous week (X). The following snippet of the R-Code fits a linear model on the data, prints out the values of the intercept and slope and also provides a summary of the fitted model.
+Through this linear model we are trying to predict the value of actual gross box office results of current week (Y) using the gross box office results of the previous week (X). The following snippet of the R-Code fits a linear model on the data, prints out the values of the intercept and slope and also provides a summary of the fitted model.
 ```{r q1_fit_model}
 mod = lm( ticketSales$CurrentWeek ~ ticketSales$LastWeek )
 mod
@@ -54,8 +56,10 @@ summary(mod)
 ```
 The summary provides us with a lot of useful values that we will use in the upcoming sections to calculate the Confidence Intervals, Prediction Intervals and perform Hypothesis Testing. Some of the values are as follows:
 
-Sum of Residuals Square (s) = 18010\\
-Degrees of freedom (n-2) = 16\\
+Sum of Residuals Square (s) = 18010
+
+
+Degrees of freedom (n-2) = 16
 
 
 Combining all the information from the previous sections the final fitted model looks as follows:
@@ -117,6 +121,11 @@ We need to run a Hypothesis Test for $\beta_0$ given by:
 \begin{center}
 \begin{math}
 Null \big(H_{0}\big) \beta_{0}= 10000
+\end{math}
+\end{center}
+
+\begin{center}
+\begin{math}
 Alternate \big(H_{1}\big) \beta_{0} \ne 10000
 \end{math}
 \end{center}
@@ -176,7 +185,7 @@ There is no use of a Linear Model if we cannot predict new values of the paramet
 
 \begin{center}
 \begin{math}
-\hat{y}_{n+1} \pm t_{\alpha/2,n-2}\sqrt{MSE} \sqrt{1+\dfrac{1}{n}+\dfrac{(x_{n+1}-\bar{x})^2}{\sum(x_i-\bar{x})^2}}
+\hat{y}_{curr} \pm t_{\alpha/2,n-2} s \sqrt{1+\dfrac{1}{n}+\dfrac{(x_{curr}-\bar{x})^2}{\sum(x_i-\bar{x})^2}}
 \end{math}
 \end{center}
 
@@ -240,28 +249,22 @@ The linear trend in the scatterplot seems strong, which means that a linear regr
 
 here,
 X = Number of Invoices
+
+
 Y = Total Time required to process those Invoices
 
-Through this linear model we are trying to predict the value of total time required to process invoices (Y) using the number of invoices (X). The following snippet of the R-Code fits a linear model on the data, prints out the values of the intercept and slope and also provides a summary of the fitted model.
-```{r q2_fit_model}
-mod = lm(invoiceTime$Time ~ invoiceTime$Invoices )
-mod
-```
-
-After fitting the model and observing the values of the parameters $\hat{\beta_0}, \hat{\beta_1}$ we find that:
+Through this linear model we are trying to predict the value of total time required to process invoices (Y) using the number of invoices (X). Using the summary table from page 40 in the book we find that:
 
 \begin{center} $ \hat{\beta_0} = 0.64171 $ \end{center}
+
 \begin{center} $\hat{\beta_1} = 0.01129 $ \end{center}
 
+The summary provides us with a lot of other useful values as well that we will use in the upcoming sections to calculate the Confidence Intervals, Prediction Intervals and perform Hypothesis Testing. Some of the values are as follows:
 
-The summary of the model is as follows:
-```{r q2_fit_model2}
-summary(mod)
-```
-The summary provides us with a lot of useful values that we will use in the upcoming sections to calculate the Confidence Intervals, Prediction Intervals and perform Hypothesis Testing. Some of the values are as follows:
+Sum of Residuals Square (s) = 0.3298
 
-Sum of Residuals Square (s) = 0.3298\\
-Degrees of freedom (n-2) = 28\\
+
+Degrees of freedom (n-2) = 28
 
 
 Combining all the information from the previous sections the final fitted model looks as follows:
@@ -279,10 +282,20 @@ A $100(1-\alpha)\%$ confidence interval for $\hat{\beta_0}$ is given by the foll
 \end{center}
 
 First finding the confidence interval by just using the summary table given on Page 40. We see:
+
+
 $\hat{\beta_0}$ = 0.6417099
+
+
 StdError($\beta_0$) = 0.1222707
+
+
 $n$ = 30
+
+
 $s$ = 0.3298
+
+
 finding the value of the t multiplier $t_{\alpha/2,n-2}$ using qt() we get t_mult = 2.048.
 So the below R code helps in computing the values:
 ```{r q2_CI_1}
@@ -338,6 +351,11 @@ We need to run a Hypothesis Test for $\beta_0$ given by:
 \begin{center}
 \begin{math}
 Null \big(H_{0}\big) \beta_{1}= 0.01
+\end{math}
+\end{center}
+
+\begin{center}
+\begin{math}
 Alternate \big(H_{1}\big) \beta_{1} \ne 0.01
 \end{math}
 \end{center}
@@ -346,7 +364,7 @@ The hypothesis test for $\beta_0$ is given by the following formula:
 
 \begin{center}
 \begin{math}
-\hat{T} = \frac{\hat{\beta_1} - \beta_1}{\frac{s}{\sqrt{S_XX}}}
+\hat{T} = \frac{\hat{\beta_1} - \beta_1}{\frac{s}{\sqrt{S_{XX}}}}
 \end{math}
 \end{center}
 
@@ -358,10 +376,20 @@ p-val = 2 \cdot P\big( t \geq \mid\hat{T}\mid\big)
 \end{center}
 
 First we will do the Hypothesis testing using the values from the summary table on Page 40. We see:
+
+
 $\hat{\beta_1}$ = 0.0112916
+
+
 StdError($\beta_1$) = 0.0008184
+
+
 $n$ = 30
+
+
 $s$ = 0.3298
+
+
 So the below R code helps in computing the values:
 ```{r q2_HT_1}
 bet1_hat = 0.0112916
@@ -421,11 +449,19 @@ There is no use of a Linear Model if we cannot predict new values of the paramet
 
 \begin{center}
 \begin{math}
-\hat{y}_{n+1} \pm t_{\alpha/2,n-2}\sqrt{MSE} \sqrt{1+\dfrac{1}{n}+\dfrac{(x_{n+1}-\bar{x})^2}{\sum(x_i-\bar{x})^2}}
+\hat{y}_{curr} \pm t_{\alpha/2,n-2} s \sqrt{1+\dfrac{1}{n}+\dfrac{(x_{curr}-\bar{x})^2}{\sum(x_i-\bar{x})^2}}
 \end{math}
 \end{center}
 
-The following snippet of code helps us to find the upper and lower limits of the Prediction Interval for the new Y as follows:
+We need to use the value of the summary table to compute the prediction interval. Because $x_{mean}$ is equal to the value of $x_{curr}$ the last term in the standard error for predicting y becomes 0 hence the prediction interval just remains :
+
+\begin{center}
+\begin{math}
+\hat{y}_{curr} \pm t_{\alpha/2,n-2} s \sqrt{1+\dfrac{1}{n}}
+\end{math}
+\end{center}
+
+The following snippet of code helps us to find the upper and lower limits of the Prediction Interval for the new Y as follows by just using the values from the summary:
 
 ```{r q2_PI}
 #fitted model = 
@@ -433,16 +469,12 @@ The following snippet of code helps us to find the upper and lower limits of the
 x_curr = 130 #the value at which we need to find the prediction interval
 y_hat = 0.6417099 + (0.0112916 * x_curr)
 #y_hat = 2.109618
-x_col = invoiceTime$Invoices
-x_bar = mean(x_col)
-#x_bar = 130.0333
-sxx = sum((x_col-x_bar)^2)
-#sxx = 162367
-n = length(x_col)
+#n = length(x_col)
+n = 30
 s = 0.3298 #found through the summary of the linear model
 t_mult = 2.048 #found using the T Table, equal to t0.25 for 28 degrees of freedom
-yPILower = y_hat - (t_mult * s * sqrt(1 + (1/n) + (((x_curr - x_bar)^2)/sxx) ))
-yPIUpper = y_hat + (t_mult * s * sqrt(1 + (1/n) + (((x_curr - x_bar)^2)/sxx) ))
+yPILower = y_hat - (t_mult * s * sqrt(1 + (1/n) ))
+yPIUpper = y_hat + (t_mult * s * sqrt(1 + (1/n) ))
 #yPILower = 1.423023
 #yPIUpper = 2.796213
 ```
