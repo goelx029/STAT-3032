@@ -1,0 +1,109 @@
+---
+title: "Homework 4 Saksham Goel"
+author: "Saksham Goel"
+date: "March 20, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1
+
+## Part A
+
+Loading the dataset and trying to fit a linear model of the form as given by:
+
+<!-- TODO - Add the Latex Format for the Linear Model that we are fitting -->
+
+```{r P1PA}
+glakesData = read.table("glakes.txt", header = TRUE)
+linearModelGlakes = lm(Time ~ Tonnage, data = glakesData)
+summary(linearModelGlakes)
+```
+
+<!-- TODO - Add the Latex Format for the Linear Model that was fitted -->
+
+## Part B
+
+Plotting the fitted model, we can see that the fitted model does not seem to have a very good fit on the data. Also we can see using the Model Diagnostic Models that the model violates many assumpyions of fitting a linear model when it is fit on the data. A detailed discussion of each diagnostic plot is given below:
+
+```{r P1PB}
+plot(Time ~ Tonnage, data = glakesData)
+abline(linearModelGlakes)
+
+par(mfrow=c(2,2))
+plot(linearModelGlakes)
+```
+
+Diagnostic Plots and what can be inferred from them:
+  * Residuals v/s Fitted - 
+  * Normal Q-Q - 
+  * Scale-Location - 
+  * Residuals v/s Leverage - 
+
+## Part C
+
+As discussed in Part B we know that the model does not follow the normality assumption of fitting a linear model (Normal Q-Q plot). So using variable transformation such that it follows the normality assumption, we use BoxCox function in R to find the variable transformation for the repsonse variable ($\hat{y_i}$). 
+
+<!-- Add the latex format of the equation that is supported by the boxcox format -->
+
+The goal of the BoxCox transformation as is being used in this part is to Make P(Y|X) as normal as possible.
+
+The code segment below will find the variable transformation and plot a new linear model based on the transformed variable and also plot the Diagnostic Plots related to the new linear model on transformed variable (response variable).
+
+```{r P1PC}
+library(MASS)
+boxcox(Time ~ Tonnage, data = glakesData)
+
+boxCoxSuggestedModel = lm((Time^0.5) ~ Tonnage, data = glakesData)
+plot((Time^0.5) ~ Tonnage, data = glakesData)
+abline(boxCoxSuggestedModel)
+
+par(mfrow=c(2,2))
+plot(boxCoxSuggestedModel)
+```
+
+## Part D
+
+As discussed in Part B we know that the model does not follow the normality assumption of fitting a linear model (Normal Q-Q plot). So using variable transformation such that it follows the normality assumption, we use BoxCox function in R to find the variable transformation for the independent variable ($x_i$). 
+
+<!-- Add the latex format of the equation that is supported by the boxcox format -->
+
+The goal of the BoxCox transformation as is being used in this part is to Make P(X) as normal as possible.
+
+After making the distribution of X (independent variable) as normal as possible, we try to not violate the linearity assumption as discussed in Part B. To make sure that the linearity assumption is held, the invResPlot function is used on the model with the transformed independent variable to find the transformation for the response variable.
+
+After the final transformation is achived the code below plots the model, dataset, and all the diagnostic plots corresponding to the new linear model on transformed response and independent variable.
+
+
+```{r P1PD}
+library(MASS)
+library(car)
+boxcox(Tonnage ~ 1, data = glakesData)
+
+boxCoxSuggestedModel = lm(Time ~ (log(Tonnage)), data = glakesData)
+invResPlot(boxCoxSuggestedModel)
+InverseResponseSuggestedModel = lm((log(Time)) ~ (log(Tonnage)), data = glakesData)
+
+plot((log(Time)) ~ (log(Tonnage)), data = glakesData)
+abline(InverseResponseSuggestedModel)
+
+par(mfrow=c(2,2))
+plot(InverseResponseSuggestedModel)
+```
+
+## Part E
+
+## Part F
+
+## Part G
+
+## Part H
+
+
+# Problem 2
+
+
+## Part I
